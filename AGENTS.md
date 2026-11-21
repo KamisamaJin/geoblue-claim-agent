@@ -6,4 +6,4 @@ Run helpers from this project root with `python3 -m geoblue_claims`. Run determi
 
 Medical originals, account preferences, patient records, inputs, evidence, timing records, databases and audit logs belong only in ignored `inbox/` or `data/`. Use synthetic fixtures and generic documentation. Before publishing, inspect the staged tree for personal names, account suffixes, claim IDs, local home paths, private files and credentials.
 
-The helpers perform local operations only. The skill uses supported Codex browser tools for insurer actions, after each specific application is confirmed by the user. A claim with an unresolved submission outcome must be reconciled before retrying. Do not equate portal completion with a confirmed deposit.
+The Python helpers perform local operations only. The skill uses Codex browser tools in Codex and project-scoped Playwright MCP in Claude Code. Obtain authorization before entering or uploading claim data and separate final confirmation before submission. Reconcile an unresolved submission before retrying. Record deposits separately from portal status.

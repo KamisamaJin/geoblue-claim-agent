@@ -5,6 +5,7 @@
 # Local tool configuration and credentials.
 /.agents/
 /.codex/
+/.claude/settings.local.json
 /.aws/
 .env
 .env.*

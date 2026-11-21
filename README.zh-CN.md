@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-这是一个独立的 Codex skill 和本地命令行工具，用于整理 GeoBlue / BCBS Global Solutions 家庭医疗账单。它从收件目录读取材料，记录字段来源，核对原币金额和重复账单，并通过会员网站准备理赔草稿。用户确认具体申请后才正式提交，也可以查询进度和处理补件。
+这是一个 AI 技能和本地命令行工具，用于整理 GeoBlue / BCBS Global Solutions 家庭医疗账单。它从收件目录读取材料，记录字段来源，核对原币金额和重复账单，并通过会员网站准备理赔草稿。用户确认具体申请后才正式提交，也可以查询进度和处理补件。
 
 ## 开始使用
 
@@ -29,9 +29,13 @@ python3 -m geoblue_claims install-skill
 
 快速流程会复用本地已核验的成员档案和收款方式。获得该笔申请的填写和上传授权后，再按页面批量填写官网草稿。完成后停在授权页，展示患者、费用、附件和收款方式摘要。你确认这一笔后，才签名、勾选声明并提交。内容或附件变化时需重新确认。
 
+## Claude Code
+
+在 Claude Code 打开项目，批准项目的 `geoblue_playwright` MCP 服务。需要 Node.js 18 或更新版本、`npx` 或 `pnpm`，以及 Google Chrome。用 `claude mcp get geoblue_playwright` 检查服务连接，然后执行 `/geoblue-claims`。在 Playwright 打开的 Chrome 窗口登录会员网站。填写授权和最终提交确认规则相同。[Claude Code 配置与操作指南](skills/geoblue-claims/references/claude-code.md)
+
 ## 运行依赖
 
-Python 辅助工具使用标准库。材料识别由当前 Codex 模型完成，官网操作需要 Codex 的浏览器工具。`install-skill` 将源码链接到项目的 `.agents/skills`。如果当前会话还没识别 `$geoblue-claims`，可重新打开项目或让 Codex 读取 [skill 文件](skills/geoblue-claims/SKILL.md)。
+Python 辅助工具使用标准库。材料由当前 AI 模型识别，官网操作使用相应的浏览器工具。`install-skill` 将源码链接到 Codex 的项目级 `.agents/skills`。如果当前会话还没识别 `$geoblue-claims`，可重新打开项目或让 Codex 读取技能文件。[技能文件](skills/geoblue-claims/SKILL.md)
 
 PDF 需要 Poppler 的 `pdfinfo`、`pdftotext`、`pdftoppm`；Mac 上可通过 `brew install poppler` 安装。HEIC 使用 macOS 自带的 `sips`。单文件上限 100 MiB，PDF 上限 100 页，超出时会保留原件并提示拆分。
 
@@ -48,11 +52,11 @@ PDF 需要 Poppler 的 `pdfinfo`、`pdftotext`、`pdftoppm`；Mac 上可通过 `
 
 Git 忽略 `inbox/` 和 `data/`。文件权限限制了本机访问，存储层本身未加密。需要备份时，将整个 `data/` 放入私密备份。
 
-所有 Python 命令只操作本地文件和记录，不会连接保险公司、发送邮件或自动操作浏览器。网页操作由 skill 协调 Codex 的浏览器工具执行。CLI 的确认参数是流程记录，不能替代用户在聊天中的真实确认。
+Python 命令只操作本地文件和记录。CLI 的确认参数用于记录用户在聊天中的实际授权。
 
 日常从 `intake` 开始。它扫描收件目录，准备新材料并汇总待办。已归档到申请的材料无需重复渲染。已保存的家庭成员、电话、诊所和收款偏好优先复用。[快速流程](skills/geoblue-claims/references/fast-path.md)
 
-真实账单用 `prepare` 模式准备正常名称的草稿；测试用 `test` 和 `TEST-DO-NOT-SUBMIT` 名称。两种模式均不能签名、勾选声明或点击最终 Submit。取得官网草稿最终审核的实际确认后，才新建 `production` 执行并检查提交 guard。模块未指定模式时仍默认为测试模式。
+Codex 浏览器辅助工具通过 `prepare` 准备真实草稿，通过 `test` 进行测试，两者都在签名、勾选声明和最终提交之前停止。Claude Code 使用 Playwright MCP 执行同一流程。真实草稿收到最终确认后，技能会核对提交检查再执行提交。
 
 提交超时或中断会留下“结果未知”的记录；需先核实官网是否已收到，再决定后续操作。网站 `Complete` 只记录为“已处理”，到账需要你明确确认。每次调用才会查进度，界面上已有的本地状态不会冒充实时官网查询。
 

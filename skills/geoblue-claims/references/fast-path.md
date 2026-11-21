@@ -29,7 +29,7 @@ This is a target for complete, straightforward applications, not a guarantee for
 
 The page can render a form skeleton before displaying a blocking **Loading** overlay. Field existence alone is insufficient readiness. Wait for that overlay to disappear and re-read the UI before pointer actions. Never focus an underlying control through a loading overlay.
 
-## CUA helper
+## Codex browser helper
 
 Read current CUA/browser/upload documentation first. Load the local module with dynamic `import()` in `cua_repl`; string `eval` is unavailable. Do not run it as a terminal browser driver. Example (use the actual absolute project path):
 

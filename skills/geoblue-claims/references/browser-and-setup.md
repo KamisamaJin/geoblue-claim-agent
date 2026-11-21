@@ -15,7 +15,7 @@ Official references:
 
 ## First configuration
 
-Use the available Codex browser/computer tools and their current documentation. There is no insurer API integration in this project. Do not reverse-engineer private endpoints or embed saved cookies, passwords or OTPs in files. Ask the user to sign into the official website and handle authentication challenges. Reuse a supported browser session; a phone App session is not a browser session.
+Use the browser tools available in the current host. In Claude Code use the project [Playwright MCP setup](claude-code.md). This project uses the insurer's member website. Ask the user to sign in and handle authentication challenges in the browser. Keep passwords, cookies, and OTPs out of project files.
 
 On this Mac, the native HEIC codec needed execution outside the restrictive shell sandbox in testing. If local `sips` conversion is blocked, request only the scoped permission needed to rerun that local preparation command. Do not conclude that the user's file is damaged from a native-codec permission failure; preserve it and report an unresolved preparation error if access remains unavailable.
 

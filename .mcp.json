@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "geoblue_playwright": {
+      "type": "stdio",
+      "command": "sh",
+      "args": ["skills/geoblue-claims/scripts/start-playwright-mcp.sh"]
+    }
+  }
+}
