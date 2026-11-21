@@ -1,0 +1,4 @@
+interface:
+  display_name: "GeoBlue 家庭报销"
+  short_description: "快速整理并填写家庭理赔草稿，最终提交前逐笔确认，查询进度并准备补件"
+  default_prompt: "使用 $geoblue-claims 按快速流程处理收件目录中的新账单，完成官网草稿后停在最终提交前，逐笔让我确认。"

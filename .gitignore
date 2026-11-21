@@ -1,0 +1,35 @@
+# Local bills, profiles, preferences, resolved claims and evidence.
+/inbox/
+/data/
+
+# Local tool configuration and credentials.
+/.agents/
+/.codex/
+/.aws/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.log
+
+# Build, test and editor output.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.DS_Store
+.coverage
+.coverage.*
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+build/
+dist/
