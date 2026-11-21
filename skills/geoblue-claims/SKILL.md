@@ -1,13 +1,13 @@
 ---
 name: geoblue-claims
-description: 按需快速准备 GeoBlue / BCBS Global Solutions 家庭医疗理赔：整理多语言账单、填写官网草稿并在最终提交前逐笔请求用户确认，查询进度并准备补件。适用于“处理新账单”“查看待确认申请”“补充这笔材料”“查询报销进度”“确认到账”；不用于替用户决定保险资格、付款或自动申诉。
+description: Prepare GeoBlue / BCBS Global Solutions family claims on demand. Organize multilingual bills, prepare member portal drafts, and get user confirmation for each claim before final submission. Use for new bills, drafts awaiting review, supporting documents, status checks, and user-confirmed deposits. Coverage decisions, payments, and automated appeals are out of scope.
 ---
 
-# GeoBlue 家庭报销
+# GeoBlue Family Claims
 
-Use Chinese for conversation unless the user prefers another language. This is a company-group, multi-patient workflow run on demand in Codex. Use the current Codex model to interpret documents; use the local Python CLI for records, arithmetic and submission guards.
+Respond in the user's preferred language or match the language of their request. This is a company-group, multi-patient workflow run on demand in Codex. Use the current Codex model to interpret documents and the local Python CLI for records, arithmetic, and submission guards.
 
-**Default outcome for “处理新账单”: prepare the real website draft using the fast workflow, then stop at Authorization and ask the user to confirm that specific final application.** Filling/upload authorization, a standing preference, an earlier approval or a test success never substitutes for this final confirmation. Do not certify, sign or click Submit eClaim before it arrives.
+**For new bills, use the fast workflow to prepare the website draft, then stop at Authorization and ask the user to confirm that specific final application.** Entry and upload permission, standing preferences, prior approvals, and test results are separate from final confirmation. Wait for final confirmation before certifying, signing, or clicking Submit eClaim.
 
 ## Account preferences and defaults
 
