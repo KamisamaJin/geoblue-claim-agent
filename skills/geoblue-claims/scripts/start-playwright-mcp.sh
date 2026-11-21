@@ -5,6 +5,13 @@ cd "$(dirname "$0")/../../.."
 umask 077
 mkdir -p data/playwright-output
 
+case "$#:${1-}" in
+    0:) PLAYWRIGHT_MCP_HEADLESS=1 ;;
+    1:--sign-in) PLAYWRIGHT_MCP_HEADLESS=0 ;;
+    *) echo 'Usage: start-playwright-mcp.sh [--sign-in]' >&2; exit 2 ;;
+esac
+export PLAYWRIGHT_MCP_HEADLESS
+
 package='@playwright/mcp@0.0.86'
 if command -v npx >/dev/null 2>&1; then
     set -- npx --yes "$package"

@@ -15,7 +15,7 @@ Official references:
 
 ## First configuration
 
-Use the browser tools available in the current host. In Claude Code use the project [Playwright MCP setup](claude-code.md). This project uses the insurer's member website. Ask the user to sign in and handle authentication challenges in the browser. Keep passwords, cookies, and OTPs out of project files.
+Use the [headless Playwright MCP workflow](headless.md) on the insurer's member website. Ask the user to sign in and handle authentication challenges in the dedicated Chrome window when required. Keep passwords, cookies, and OTPs out of project files.
 
 On this Mac, the native HEIC codec needed execution outside the restrictive shell sandbox in testing. If local `sips` conversion is blocked, request only the scoped permission needed to rerun that local preparation command. Do not conclude that the user's file is damaged from a native-codec permission failure; preserve it and report an unresolved preparation error if access remains unavailable.
 
@@ -31,10 +31,10 @@ If a policy is verified but its filing deadline cannot be found, leave the rule 
 
 ## Browser preparation and final submission
 
-The default is fast website preparation, then a separate final confirmation. For authorized entry/upload use `draft authorize-entry` / `draft entry-guard` and helper `mode:'prepare'`; do not call `submission begin` during preparation. Stop at Authorization with declaration/signature untouched and show the complete final review. Only after the actual user confirms that prepared application use `draft approve`, `submission begin`, a fresh `submission guard` and a new production helper run.
+The default is headless website preparation, then a separate final confirmation. For authorized entry/upload use `draft authorize-entry` / `draft entry-guard`. Stop at Authorization with declaration/signature untouched and show the complete final review. Only after the actual user confirms that prepared application use `draft approve`, `submission begin`, a fresh `submission guard` and the separate final action.
 
 - Re-read the live page, selected patient and exact origin; reuse verified account defaults. All browser actions use supported browser tools and the native pointer/keyboard fast path. Do not rediscover unrelated account settings or assume old screenshots still match the form.
-- The approved `destination_origin` must match the actual origin receiving claim data. If an official link redirects to another origin, verify it and revise the draft's destination, then obtain new approval before transmitting. The current helper accepts HTTPS origins under `bcbsglobalsolutions.com`; an external destination requires deliberate adapter work and user approval.
+- The approved `destination_origin` must match the actual HTTPS origin receiving claim data. If an official link redirects to another origin, verify it and revise the draft's destination, then obtain new approval before transmitting.
 - Fill only the entry-guard snapshot during preparation and the locked approved snapshot during final execution. Check dates, decimal separators and displayed currency. Preserve original currency. Resolve changed values before the final review.
 - Before upload, read the browser tool's file-upload documentation. Use exact archive paths from `entry-guard`, or the final `submission guard` for any newly authorized final-stage upload. If conversion/resizing is required, import that derivative and obtain approval for the actual attachment change before transmitting it.
 - Review the website summary and actual declarations with the user before final approval. After that approval, follow current tool rules to certify/sign only as specifically authorized, then verify origin/q reference and the fresh guard before the one final click. Do not accept an unexpected agreement on a generic historical approval.

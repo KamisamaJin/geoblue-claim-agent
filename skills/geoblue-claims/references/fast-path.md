@@ -2,7 +2,7 @@
 
 Use after account setup on the authenticated member website. Account access, policy, patient mapping and the saved payout method come from private records. Revisit them when missing, changed, contradicted by the page or required to reconcile an unresolved attempt. Keep existing contact details and select the saved masked payout method from the patient's verified private profile. Ask for missing facts in one batch.
 
-This is the default preparation path for new real bills. After per-claim entry/upload authorization, use `prepare` mode, finish the website draft, show the final review and stop for the user's actual final confirmation. Do not start a submission attempt, certify or sign during preparation. New actual bills use their own evidence and matching real ledger draft; TEST drafts stay excluded from real filing.
+Use this preparation path with [headless Playwright MCP](headless.md) for new real bills. After per-claim entry/upload authorization, finish the website draft, show the final review and stop for the user's actual final confirmation. Do not start a submission attempt, certify or sign during preparation. New actual bills use their own evidence and matching real ledger draft; TEST drafts stay excluded from real filing.
 
 ## Three-minute plan
 
@@ -21,7 +21,7 @@ This is a target for complete, straightforward applications, not a guarantee for
 3. Basic information: keep contact defaults, choose the exact patient, preserve a normal nickname (tests use TEST-DO-NOT-SUBMIT). Other Insurance's heading is **Other Insurance**, although the step indicator says Other Insurance Form. Wait for the next actual field rather than a guessed heading.
 4. Charge: category before saved facility. Saved provider labels can be uppercase; match case-insensitively. Establish/select the saved clinic before country/currency. If the current visual page already shows the confirmed saved city/country/currency, preserve those fields. Do not rely on empty semantic input values to conclude a visible default is missing.
 5. Dropdowns use role **searchbox**, not textbox named Search. Wait for the actual popup, focus its searchbox and use native `typeText` for filtering. Country **South Korea**; currency **Korean Republic Won (S.Korea)**, searched with Korea, are the observed Korean labels. These are exact observations, not defaults for other countries/currencies. After a choice, wait for the popup to close before the next field.
-6. Date picker: use its button and the calendar's **mm/dd/yyyy** searchbox, then **OK**. Keep an already matching date. Flutter's semantic input can disagree with the rendered page. Click the current DOM-observed control rectangle with `tab.click([x,y])` and enter data with native `pressKey` and `typeText`. Confirm the rendered result once per section.
+6. Date picker: use its button and the calendar's **mm/dd/yyyy** searchbox, then **OK**. Keep an already matching date. Flutter's semantic input can disagree with the rendered page. Click the currently rendered control with native pointer input and enter the value with the keyboard. Confirm the rendered result once per section.
 7. Scroll the actual section into view before actions. Flutter may report off-screen controls as visible, and semantic click locations can drift after reflow. When a semantic action fails, take one fresh screenshot and target the visible control. Do not keep repeating the same selector or blindly reuse old indices/coordinates. Treat a macro failure as a handoff to this visual fallback.
 8. Save one approved charge and verify its displayed provider, date, total and currency once. Respect each claim's explicitly approved grouping. Do not create an extra pharmacy charge when those costs are already included.
 9. **Add Supporting Documents** is generic text, despite native AX sometimes calling it a link. Use `getByText`. File chooser takes one file per upload and returns to the saved-charge page. Wait for each friendly filename; do not upload an existing filename again on resume. Exact bytes and paths come from the local guard.
@@ -29,7 +29,7 @@ This is a target for complete, straightforward applications, not a guarantee for
 
 The page can render a form skeleton before displaying a blocking **Loading** overlay. Field existence alone is insufficient readiness. Wait for that overlay to disappear and re-read the UI before pointer actions. Never focus an underlying control through a loading overlay.
 
-## Codex browser helper
+## Optional Codex CUA helper
 
 Read current CUA/browser/upload documentation first. Load the local module with dynamic `import()` in `cua_repl`; string `eval` is unavailable. Do not run it as a terminal browser driver. Example (use the actual absolute project path):
 

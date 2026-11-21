@@ -7,7 +7,7 @@ description: Prepare GeoBlue / BCBS Global Solutions family claims on demand. Or
 
 Respond in the user's preferred language or match the language of their request. This is a company-group, multi-patient workflow run on demand. Use the current model to interpret documents and the local Python CLI for records, arithmetic, and submission guards.
 
-**For new bills, use the fast workflow to prepare the website draft, then stop at Authorization and ask the user to confirm that specific final application.** Entry and upload permission, standing preferences, prior approvals, and test results are separate from final confirmation. Wait for final confirmation before certifying, signing, or clicking Submit eClaim.
+**For new bills, fill and upload in headless Playwright MCP by default, then stop at Authorization for the user's confirmation of that specific final application.** Reuse the saved browser profile. Ask the user to sign in manually only when the portal requires authentication. Entry and upload permission, standing preferences, prior approvals, and test results are separate from final confirmation. Wait for final confirmation before certifying, signing, or clicking Submit eClaim.
 
 ## Account preferences and defaults
 
@@ -24,16 +24,16 @@ Find the project root containing `geoblue_claims/` and this skill's `skills/geob
 
 1. Normally run `intake` once: it scans, prepares only unassigned materials and reports pending work and unresolved attempts. Use `doctor` for initial setup or a missing prerequisite, rather than on every bill. At the start of a genuinely interrupted run, run `recover` once. Do not run recovery while another chat is actively submitting.
 2. Inspect every unresolved attempt. A crash, timeout, uncertain final click or interrupted upload is not evidence of failure. Reconcile against the insurer before retrying; retain unknown state when the result remains ambiguous.
-3. For new bills or draft preparation, read [fast-path.md](references/fast-path.md). In Claude Code, also read [claude-code.md](references/claude-code.md) for Playwright MCP setup and actions. Use [browser-and-setup.md](references/browser-and-setup.md) for first configuration, changed forms, status checks or reconciliation. Read [data-contract.md](references/data-contract.md) when writing profiles, policies, drafts, status observations or supplement data.
+3. For new bills or draft preparation, read [headless.md](references/headless.md) and [fast-path.md](references/fast-path.md). In Claude Code, also read [claude-code.md](references/claude-code.md) for MCP registration. Use [browser-and-setup.md](references/browser-and-setup.md) for first configuration, changed forms, status checks or reconciliation. Read [data-contract.md](references/data-contract.md) when writing profiles, policies, drafts, status observations or supplement data.
 
 ## Default fast workflow
 
 1. Use one `intake`, cached verified family/policy/provider records and the established preferences above. Read only new materials and ask genuinely missing facts together. Every new application's patient, dates, reason, amounts, currency and attachments come from its own evidence; never copy those clinical values from the successful test.
 2. Present the per-claim entry summary and reuse any actual authorization already covering that patient, data, attachments and destination. If missing, obtain it once, then record `draft authorize-entry` and check `draft entry-guard`. This permits preparation only.
-3. In Codex use `scripts/fast-flow.mjs` in `cua_repl` with `mode: 'prepare'`. In Claude Code use the project `geoblue_playwright` MCP tools and follow the preparation steps in the Claude Code reference. Preserve generated normal nicknames unless a replacement is supplied. Reuse the authenticated tab and portal navigation. Resume only the matching real unsubmitted draft in the private ledger. Create a new eClaim only when none exists. Exclude TEST drafts from real filing.
+3. In Codex start `python3 skills/geoblue-claims/scripts/portal-mcp.py` for the headless session. In Claude Code use the project `geoblue_playwright` MCP tools. Follow the headless reference to reuse or renew sign-in. Preserve generated normal nicknames unless a replacement is supplied. Reuse the authenticated tab and portal navigation. Resume only the matching real unsubmitted draft in the private ledger. Create a new eClaim only when none exists. Exclude TEST drafts from real filing.
 4. Work through patient/insurance, charge details, then named attachments and the existing payout method. Use live controls, wait for loaders and popups, and verify values after entry. Use native pointer and keyboard input for Flutter controls that reject semantic fills. Name converted receipts before uploading, and reconcile existing attachments by saved upload evidence and fingerprints.
 5. Save the observed charge/attachment summary before leaving Charges, and a safe screenshot at Authorization. Preserve the eClaim/draft reference in private portal state. Show the final patient, date, provider, reason, original total/currency, attachments, masked payout reference and required declaration/signer in chat. **Stop here, with certification unchecked and signature blank, awaiting final confirmation.** Do not call `draft approve` or `submission begin` while waiting.
-6. Only after that final confirmation, use the final-submission procedure below. In Codex create a separate `mode: 'production'` run. In Claude Code use a separate final action with the fresh submission guard and the exact prepared draft reference.
+6. Only after that final confirmation, use the final-submission procedure below with a fresh submission guard and the exact prepared draft reference.
 
 The standard preparation macro covers one Hospital / Facility charge at a saved facility with confirmed no-accident/no-other-insurance answers. For other truthful answers, new providers or multiple charges, use the same native interaction pattern against the actual form; do not change answers or grouping to fit the shortcut.
 
@@ -43,7 +43,7 @@ For a configured family account, start with the [fast path](references/fast-path
 
 Tests **never click the final Submit eClaim**, never certify/sign, never use `draft approve` or `submission begin`, and never turn a test run into a production run. Use local simulated tests for submission-gate checks; do not invoke the final-submit routine on a real website in test mode. Keep test drafts clearly named `TEST-DO-NOT-SUBMIT` and record their portal references separately in private evidence so future runs exclude them from real filing. Do not treat test authorization as authority to file a duplicate of a submitted claim.
 
-Record timing and evidence under private `data/`, with the measured start and end stages. Use the visual fallback when a batch fails and preserve the draft at the time checkpoint. The Codex helper defaults to `test`. Its `prepare` and `production` modes are immutable. Claude Code follows the same authorization stages through individual MCP tools.
+Record timing and evidence under private `data/`, with the measured start and end stages. Use a headless screenshot when a batch fails and preserve the draft at the time checkpoint.
 
 ## Process new bills
 
@@ -61,7 +61,7 @@ Present a compact review containing the claim id, patient, service date, provide
 
 ### Authorize entry, prepare, then stop
 
-After the user authorizes filling/uploading the displayed application, run `draft authorize-entry <id> --token <current-review-token> --user-message <actual-message>`, then `draft entry-guard <id>` before each entry/upload batch. Reuse an existing valid authorization rather than asking again. Use its snapshot and archived attachment paths with the fast workflow's `prepare` mode; this does not set final approval or create a submission attempt.
+After the user authorizes filling/uploading the displayed application, run `draft authorize-entry <id> --token <current-review-token> --user-message <actual-message>`, then `draft entry-guard <id>` before each entry/upload batch. Reuse an existing valid authorization. Use its snapshot and archived attachment paths for headless preparation. Final approval and submission attempts require the separate procedure below.
 
 The entry guard permits only saved reimbursement-method checks to remain pending until that wizard step. Clinical, patient, policy, duplicate and document-integrity errors still block it. Snapshot changes invalidate it. Record runtime q/charge references and UI evidence in private portal state rather than repeatedly rewriting unchanged clinical data. Update substantive fields only with evidence, then obtain the appropriate fresh authorization.
 
@@ -73,7 +73,7 @@ Only after the user confirms the prepared application's final review:
 
 1. Run `draft review <id>` again. If its token differs from the final review shown to the user, show the changes and obtain fresh confirmation. The token represents the complete snapshot, including patient/policy, saved payment reference, destination and evidence hashes.
 2. Record the actual confirmation using `draft approve <id> --token <token> --user-message <exact-user-confirmation>`. Pass shell arguments safely, or call helpers with structured argument arrays; never interpolate document text as shell code.
-3. Run `submission begin <id>` and use the locked snapshot. In Codex create a new `mode: 'production'` browser-helper run. In Claude Code resume the confirmed real draft at Authorization. Run `submission guard <attempt_id>` before any remaining entry and immediately before final Submit. A failed guard means stop transmitting and reconcile possible external effects.
+3. Run `submission begin <id>` and use the locked snapshot. In Playwright MCP use a separate final action at Authorization for the confirmed real draft. If using the Codex CUA helper, create a new `mode: 'production'` run. Run `submission guard <attempt_id>` before any remaining entry and immediately before final Submit. A failed guard means stop transmitting and reconcile possible external effects.
 4. Verify the live origin and q reference match the confirmed application. Only now complete the actual confirmed declaration/signature, following current browser-tool rules, and click final Submit once using the fresh guard. If patient, totals, currency, attachments, payment reference, destination or declarations differ, stop for a new final confirmation. Never silently accept changes.
 5. After observing an actual success receipt or matching official record, save it as a private evidence artifact and use `submission finish` for an actual Claim Number, or `submission finish-eclaim` for an immediate eClaim ID. Keep these identifiers distinct. Save an actual screenshot or download showing the result; a locally written claim summary is not a website receipt.
 6. If the result is uncertain, use `submission unknown --reason ...`, preserve the attempt and explain what remains uncertain. Do not click submit again, create a replacement claim or switch to email.

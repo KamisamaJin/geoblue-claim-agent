@@ -82,9 +82,9 @@ Review/approval/attempt commands are the same. A supplement's finish command mus
 
 `draft review <id>` returns validation errors/warnings, an exact snapshot and `review_token`.
 
-The default preparation flow uses `draft authorize-entry <id> --token <current-review-token> --user-message <actual-entry-authorization>`, then `draft entry-guard <id>` before entering/uploading. In Codex use helper `mode:'prepare'`. In Claude Code use Playwright MCP and stop at Authorization. The entry guard may leave only saved reimbursement-method checks pending for later wizard steps. It returns `may_submit: false`, does not set `approved_hash`, and never permits `submission begin`. Snapshot changes invalidate it. Reuse valid case-specific entry authorization without asking again.
+The default preparation flow uses `draft authorize-entry <id> --token <current-review-token> --user-message <actual-entry-authorization>`, then `draft entry-guard <id>` before entering/uploading in headless Playwright MCP. Stop at Authorization. The entry guard may leave only saved reimbursement-method checks pending for later wizard steps. It returns `may_submit: false`, does not set `approved_hash`, and never permits `submission begin`. Snapshot changes invalidate it. Reuse valid case-specific entry authorization.
 
-After preparing the website draft and choosing its saved payout method, present the complete final review and wait for the actual user's final confirmation. Only that confirmation permits the commands below and the host's separate final submission action. In Codex that action uses a new `mode:'production'` helper run. In Claude Code it uses the exact confirmed draft through MCP.
+After preparing the website draft and choosing its saved payout method, present the complete final review and wait for the actual user's final confirmation. Only that confirmation permits the commands below and the separate final action on the exact confirmed draft. The optional Codex CUA helper uses a new `mode:'production'` run for that action.
 
 ```text
 draft approve <id> --token <current-review-token> --user-message <actual-user-message>
